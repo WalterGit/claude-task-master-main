@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  task-master:
+    build: .
+    container_name: task-master
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    networks:
+      - wasnet
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.taskmaster.rule=Host(`task-master.wastintas.com.br`)'
+      - 'traefik.http.routers.taskmaster.entrypoints=websecure'
+      - 'traefik.http.routers.taskmaster.tls=true'
+      - 'traefik.http.routers.taskmaster.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.taskmaster.loadbalancer.server.port=3000'
+
+networks:
+  wasnet:
+    name: wasnet
+    external: true
